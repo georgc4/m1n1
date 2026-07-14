@@ -212,7 +212,6 @@ static void hv_init_secondary(struct hv_secondary_info_t *info)
         msr(SYS_ACTLR_EL12, info->actlr_el1);
     else
         msr(SYS_IMP_APL_ACTLR_EL12, info->actlr_el1);
-    msr(CNTHCTL_EL2, info->cnthctl);
     msr(SYS_IMP_APL_SPRR_CONFIG_EL1, info->sprr_config);
     msr(SYS_IMP_APL_GXF_CONFIG_EL1, info->gxf_config);
     if (cpu_features->counter_redirect) {
@@ -222,6 +221,9 @@ static void hv_init_secondary(struct hv_secondary_info_t *info)
 
     if (cpu_features->apple_sysregs_unlocked)
         reg_mask(SYS_IMP_APL_CYC_OVRD, CYC_OVRD_WFI_MODE_MASK, CYC_OVRD_WFI_MODE(0));
+
+    sysop("isb");
+    msr(CNTHCTL_EL2, info->cnthctl);
 
     if (gxf_enabled())
         gl2_call(hv_set_gxf_vbar, 0, 0, 0, 0);
