@@ -222,6 +222,7 @@ static void hv_init_secondary(struct hv_secondary_info_t *info)
     if (cpu_features->apple_sysregs_unlocked)
         reg_mask(SYS_IMP_APL_CYC_OVRD, CYC_OVRD_WFI_MODE_MASK, CYC_OVRD_WFI_MODE(0));
 
+    //For M3 and up, CNTHCTL_EL2 must be written after the counter redirection
     sysop("isb");
     msr(CNTHCTL_EL2, info->cnthctl);
 
